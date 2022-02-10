@@ -14,7 +14,6 @@ class Member(models.Model):
 
 class ExcludeBorrowedBookManager(models.Manager):
     def get_queryset(self):
-        print("hello")
         books = requests.get("http://adminservice:8000/api/books/").json()
         for book in books:
             if super().get_queryset().filter(id=book['id']).exists():

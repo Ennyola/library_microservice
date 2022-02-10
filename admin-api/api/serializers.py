@@ -15,13 +15,17 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class BookLoanedSerializer(serializers.ModelSerializer):
-    # user = serializers.SlugRelatedField(read_only=True, slug_field='email')
+    user = serializers.SlugRelatedField(read_only=True, slug_field='email')
+    book = serializers.SlugRelatedField(read_only=True, slug_field='title')
+
     class Meta:
         model = BookLoaned
         fields = ['user', 'book']
 
 
-class UnAvailableBooksSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookLoaned
-        fields = ['book', 'duration']
+class UnAvailableBooksSerializer(serializers.Serializer):
+    book = serializers.CharField(max_length=200)
+    duration = serializers.CharField(max_length=300)
+    # class Meta:
+    #     model = BookLoaned
+    #     fields = ['book', 'duration']

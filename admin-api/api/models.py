@@ -46,17 +46,17 @@ class Book(models.Model):
 
 class GetLoanedBooksManager(models.Manager):
     def get_queryset(self):
-        loaned_books = requests.get(
-            "http://clientservice:8080/api/get-loaned-books/").json()
-        for loaned_book in loaned_books:
-            if super().get_queryset().filter(id=loaned_book['id']).exists():
-                pass
-            else:
-                book = Book.objects.filter(id=loaned_book['book']).first()
-                user = Member.objects.filter(id=loaned_book['user']).first()
-                duration = datetime.timedelta(
-                    days=int(loaned_book['duration'].split(" ")[0]))
-                super().get_queryset().create(book=book, user=user,duration=duration)
+        # loaned_books = requests.get(
+        #     "http://clientservice:8080/api/get-loaned-books/").json()
+        # for loaned_book in loaned_books:
+        #     if super().get_queryset().filter(id=loaned_book['id']).exists():
+        #         pass
+        #     else:
+        #         book = Book.objects.filter(id=loaned_book['book']).first()
+        #         user = Member.objects.filter(id=loaned_book['user']).first()
+        #         duration = datetime.timedelta(
+        #             days=int(loaned_book['duration'].split(" ")[0]))
+        #         super().get_queryset().create(book=book, user=user,duration=duration)
         return super().get_queryset()
 
 
