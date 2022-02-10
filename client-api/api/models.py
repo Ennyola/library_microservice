@@ -1,5 +1,6 @@
 import requests
 from django.db import models
+from django.utils import timezone
 # Create your models here.
 
 
@@ -44,6 +45,7 @@ class BookLoaned(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(Member, on_delete=models.CASCADE)
     duration = models.DurationField()
+    date_borrowed =  models.DateField(default=timezone.now)
 
     def __str__(self):
         return f"{self.book.title}-{self.user.email}"
