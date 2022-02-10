@@ -21,7 +21,7 @@ class GetUsers(generics.ListAPIView):
 
 
 class UserBookBorrowed(generics.ListAPIView):
-    queryset = BookLoaned.objects.all()
+    queryset = BookLoaned.get_loaned_books.all()
     serializer_class = BookLoanedSerializer
 
 

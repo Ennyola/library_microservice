@@ -1,6 +1,6 @@
 import datetime
 from django.test import TestCase
-from .models import Member,BookLoaned,Book
+from ..models import Member,BookLoaned,Book
 # models test
 
 class MemberTest(TestCase):
@@ -19,7 +19,7 @@ class BookTest(TestCase):
         
     def test_title(self):
         book=Book.objects.get(id=1)
-        self.assertEqual(str(book),book.objects.title)
+        self.assertEqual(str(book),book.title)
         
 class BookLoanedTest(TestCase):
     def setUp(self):

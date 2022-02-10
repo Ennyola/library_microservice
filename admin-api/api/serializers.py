@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Book, Member,BookLoaned
+from .models import Book, Member, BookLoaned
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -11,15 +11,17 @@ class UserSerializer(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields='__all__'
-    
-class BookLoanedSerializer(serializers.Serializer):
+        fields = '__all__'
+
+
+class BookLoanedSerializer(serializers.ModelSerializer):
+    # user = serializers.SlugRelatedField(read_only=True, slug_field='email')
     class Meta:
         model = BookLoaned
-        fields='__all__'
-        
-class UnAvailableBooksSerializer(serializers.Serializer):
+        fields = ['user', 'book']
+
+
+class UnAvailableBooksSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookLoaned
-        fields=['book','duration']
-    
+        fields = ['book', 'duration']
