@@ -1,29 +1,26 @@
 version: "3.9"
-
-# networks:
-#   isolation-network:
-#     driver: bridge
-
-   
 services:
-  service1:
-      build: .
+  admin_api:
+      build: ./admin-api
       container_name: adminservice
-      command: python /usr/src/app/admin-api/manage.py runserver 0.0.0.0:8000
+      command: python manage.py runserver 0.0.0.0:8000
       volumes:
-        - .:/usr/src/app
+        - ./admin-api:/app/admin-api
       ports:
         - "8000:8000"
       # networks:
       #   - isolation-network
-  service2:
-      build: .
+  client_api:
+      build: ./client-api
       container_name: clientservice
-      command: python /usr/src/app/client-api/manage.py runserver 0.0.0.0:8080
+      command: python manage.py runserver 0.0.0.0:8080
       volumes:
-        - .:/usr/src/app
+        - ./client-api:/app/client-api
       ports:
         - "8080:8080"
+      depends_on:
+        - admin_api
       # networks:
       #   - isolation-network
       
+    
