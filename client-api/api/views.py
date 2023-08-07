@@ -1,16 +1,15 @@
 import datetime
-import requests
 from rest_framework import generics, status
 from rest_framework.views import APIView
-from .serializers import BookSerializer, BookLoanedSerializer, UserSerializer,GetLoanedBooks
-from .models import Book, Member, BookLoaned
+from .serializers import BookSerializer, LoanedBookSerializer, UserSerializer,GetLoanedBooks
+from .models import Book, User, LoanedBook
 from rest_framework.response import Response
 # Create your views here.
 
 
 class EnrolUsers(generics.ListCreateAPIView):
     serializer_class = UserSerializer
-    queryset = Member.objects.all()
+    queryset = User.objects.all()
 
 
 class GetBooks(generics.ListAPIView):
@@ -35,12 +34,12 @@ class GetSingleBook(generics.RetrieveAPIView):
 
 class LoanBook(APIView):
     def post(self, request, id):
-        serializer = BookLoanedSerializer(data=request.data)
+        serializer = LoanedBookSerializer(data=request.data)
         if serializer.is_valid():
             email, duration = serializer.data['email'], serializer.data['duration']
-            user = Member.objects.get(email=email)
+            user = User.objects.get(email=email)
             book = Book.objects.get(id=id)
-            BookLoaned.objects.create(
+            LoanedBook.objects.create(
                 book=book, user=user, duration=datetime.timedelta(days=duration))
             book.borrowed = True
             book.save()
@@ -50,4 +49,4 @@ class LoanBook(APIView):
 
 class GetLoanedBooks(generics.ListAPIView):
     serializer_class = GetLoanedBooks
-    queryset = BookLoaned.objects.all()
+    queryset = LoanedBook.objects.all()
