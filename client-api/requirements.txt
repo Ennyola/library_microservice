@@ -4,7 +4,7 @@ charset-normalizer==2.0.11
 Django==3.2.12
 django-stubs==4.2.3
 django-stubs-ext==4.2.2
-djangorestframework==3.13.1
+djangorestframework==3.14.0
 idna==3.3
 mypy==1.4.1
 mypy-extensions==1.0.0
