@@ -13,11 +13,11 @@ services:
   client_api:
       build: ./client-api
       container_name: clientservice
-      command: python manage.py runserver 0.0.0.0:8080
+      command: python manage.py runserver 0.0.0.0:8008
       volumes:
         - ./client-api:/app/client-api
       ports:
-        - "8080:8080"
+        - "8008:8008"
       depends_on:
         - admin_api
       # networks:
