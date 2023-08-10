@@ -1,12 +1,14 @@
 import datetime
+
 from rest_framework import generics, status
 from rest_framework.views import APIView
+from rest_framework.response import Response
+
 from .serializers import BookSerializer, LoanedBookSerializer, UserSerializer,GetLoanedBooks
 from .models import Book, User, LoanedBook
-from rest_framework.response import Response
+
+
 # Create your views here.
-
-
 class EnrolUsers(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
