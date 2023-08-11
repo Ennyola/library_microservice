@@ -3,8 +3,14 @@ import datetime
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.request import Request
 
-from .serializers import BookSerializer, LoanedBookSerializer, UserSerializer,GetLoanedBooks
+from .serializers import (
+    BookSerializer,
+    LoanedBookSerializer,
+    UserSerializer,
+    GetLoanedBooks,
+)
 from .models import Book, User, LoanedBook
 
 
@@ -14,13 +20,27 @@ class EnrolUsers(generics.ListCreateAPIView):
     queryset = User.objects.all()
 
 
+class Users(APIView):
+    def get(self, request):
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, context={"request": request}, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 class GetBooks(generics.ListAPIView):
     serializer_class = BookSerializer
 
     def get_queryset(self):
         queryset = Book.get_books.all()
-        publisher = self.request.query_params.get('publisher')
-        category = self.request.query_params.get('category')
+        publisher = self.request.query_params.get("publisher")
+        category = self.request.query_params.get("category")
         if publisher is not None:
             queryset = queryset.filter(publisher__icontains=publisher)
         if category is not None:
@@ -38,11 +58,12 @@ class LoanBook(APIView):
     def post(self, request, id):
         serializer = LoanedBookSerializer(data=request.data)
         if serializer.is_valid():
-            email, duration = serializer.data['email'], serializer.data['duration']
+            email, duration = serializer.data["email"], serializer.data["duration"]
             user = User.objects.get(email=email)
             book = Book.objects.get(id=id)
             LoanedBook.objects.create(
-                book=book, user=user, duration=datetime.timedelta(days=duration))
+                book=book, user=user, duration=datetime.timedelta(days=duration)
+            )
             book.borrowed = True
             book.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
