@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 
+from django.shortcuts import get_object_or_404
+
 from .serializers import (
     BookSerializer,
     LoanedBookSerializer,
@@ -23,16 +25,30 @@ class EnrolUsers(generics.ListCreateAPIView):
 class Users(APIView):
     def get(self, request):
         queryset = User.objects.all()
-        serializer = UserSerializer(queryset, context={"request": request}, many=True)
+        serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            print(serializer.validated_data)
-            print(serializer.data)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+class UserDetail(APIView):
+    
+    def get_object(self, id):
+        return get_object_or_404(User, id=id)
+    
+    def get(self, request, id):
+        user = self.get_object(id)
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request):
+        pass
+    
+    def delete(self, request):
+        pass   
 
 class GetBooks(generics.ListAPIView):
     serializer_class = BookSerializer
