@@ -44,11 +44,16 @@ class UserDetail(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def put(self, request):
-        pass
-    
+    def put(self, request,id):
+        user = self.get_object(id)
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
     def delete(self, request):
-        pass   
+        user = self.get_object(id)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class GetBooks(generics.ListAPIView):
     serializer_class = BookSerializer
