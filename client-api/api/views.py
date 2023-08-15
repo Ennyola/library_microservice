@@ -21,7 +21,6 @@ class EnrolUsers(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
-
 class Users(APIView):
     def get(self, request):
         queryset = User.objects.all()
