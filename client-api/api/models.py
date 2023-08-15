@@ -1,8 +1,7 @@
-import requests
-
 from django.db import models
 from django.utils import timezone
 
+import requests
 # Create your models here.
 
 
