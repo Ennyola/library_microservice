@@ -1,13 +1,20 @@
 from django.urls import path, include
+
+from rest_framework.routers import DefaultRouter
+
 from .views import (
-    EnrolUsers,
     GetBooks,
     GetSingleBook,
     LoanBook,
     GetLoanedBooks,
     Users,
     UserDetail,
+    UserViewSet,
 )
+
+
+router = DefaultRouter()
+router.register(r"users", UserViewSet)
 
 app_name = "client_api"
 urlpatterns = [
@@ -21,14 +28,16 @@ urlpatterns = [
             ]
         ),
     ),
-    path(
-        "users/",
-        include(
-            [
-                path("", Users.as_view(), name="enrol-user"),
-                path("<int:id>/", UserDetail.as_view(), name="user-detail"),
-            ]
-        ),
-    ),
+    # path(
+    #     "users/",
+    #     include(
+    #         [
+    #             path("", Users.as_view(), name="enrol-user"),
+    #             path("<int:id>/", UserDetail.as_view(), name="user-detail"),
+    #         ]
+    #     ),
+    # ),
     path("get-loaned-books/", GetLoanedBooks.as_view()),
 ]
+
+urlpatterns += router.urls

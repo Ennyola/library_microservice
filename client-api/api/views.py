@@ -1,9 +1,8 @@
 import datetime
 
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.request import Request
 
 from django.shortcuts import get_object_or_404
 
@@ -17,9 +16,6 @@ from .models import Book, User, LoanedBook
 
 
 # Create your views here.
-class EnrolUsers(generics.ListCreateAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
 
 class Users(APIView):
     def get(self, request):
@@ -53,6 +49,10 @@ class UserDetail(APIView):
         user = self.get_object(id)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class GetBooks(generics.ListAPIView):
     serializer_class = BookSerializer
