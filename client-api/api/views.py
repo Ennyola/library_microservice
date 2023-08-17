@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from django.shortcuts import get_object_or_404
+from django.db.models.query import QuerySet
 
 from .serializers import (
     BookSerializer,
@@ -16,43 +17,29 @@ from .models import Book, User, LoanedBook
 
 
 # Create your views here.
-
-class Users(APIView):
-    def get(self, request):
-        queryset = User.objects.all()
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-class UserDetail(APIView):
-    
-    def get_object(self, id):
-        return get_object_or_404(User, id=id)
-    
-    def get(self, request, id):
-        user = self.get_object(id)
-        serializer = UserSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    def put(self, request,id):
-        user = self.get_object(id)
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-    def delete(self, request):
-        user = self.get_object(id)
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
 class UserViewSet(viewsets.ModelViewSet):
+    """_summary_
+
+    Args:
+        viewsets (_type_): _description_
+    """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class BooksViewSet(viewsets.ModelViewSet):
+    """_summary_"""
+
+    serializer_class = BookSerializer
+
+    def get_queryset(self) -> QuerySet[Book]:
+        queryset = Book.objects.exclude(borrowed=True)
+        publishers: str = self.request.query_params.get("publishers", None)
+        if publishers is not None:
+            pass
+        return queryset
+
 
 class GetBooks(generics.ListAPIView):
     serializer_class = BookSerializer

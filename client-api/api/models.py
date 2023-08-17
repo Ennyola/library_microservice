@@ -1,10 +1,9 @@
 from django.db import models
-from django.utils import timezone
 
 import requests
+
+
 # Create your models here.
-
-
 class User(models.Model):
     """Users enrolled to the library"""
 
@@ -30,7 +29,7 @@ class ExcludeBorrowedBookManager(models.Manager):
 
 
 class Book(models.Model):
-    """Book model for gthr library"""
+    """Book model for the library"""
 
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=100, blank=True, null=True)
@@ -48,10 +47,17 @@ class Book(models.Model):
 
 
 class LoanedBook(models.Model):
+    """_summary_"""
+
     date_borrowed = models.DateField(auto_now_add=True)
     return_date = models.DateField()
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """        
         return f"{self.book.title}-{self.user.email}"
