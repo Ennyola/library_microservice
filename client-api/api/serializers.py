@@ -7,6 +7,8 @@ from .models import Book, User, LoanedBook
 
 
 class LoanedBookValidationData(TypedDict):
+    """A TypeDict specifying data from the validation data in LoanedBookSerializer"""
+
     email: str
     duration: int
     book: Book
@@ -28,18 +30,15 @@ class LoanedBookSerializer(serializers.Serializer):
     email = serializers.EmailField()
     duration = serializers.IntegerField()
 
-    def create(self, validated_data) -> LoanedBook:
+    def create(self, validated_data: LoanedBookValidationData) -> LoanedBook:
         """_summary_
 
         Args:
-            validated_data (_type_): _description_
+            validated_data (LoanedBookValidationData): The validated data from a valid serializer
 
         Returns:
-            LoanedBook: _description_
+            LoanedBook: A Loanbook object
         """
-
-        print(validated_data)
-        print(type(validated_data))
         today: date = date.today()
 
         # Adds the current date with the duration(in days) set by the user
@@ -52,6 +51,19 @@ class LoanedBookSerializer(serializers.Serializer):
             book=validated_data["book"],
         )
         return loaned_book
+
+    def validate_email(self, value: str):
+        """Check that user is already a member(email exists in db)
+
+        Args:
+            value (str): _description_
+        """
+
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "Email not registered in the Db. User does not exist"
+            )
+        return value
 
 
 class GetLoanedBooks(serializers.ModelSerializer):
