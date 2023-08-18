@@ -59,5 +59,5 @@ class LoanedBook(models.Model):
 
         Returns:
             _type_: _description_
-        """        
+        """
         return f"{self.book.title}-{self.user.email}"

@@ -34,47 +34,48 @@ class BooksViewSet(viewsets.ModelViewSet):
     serializer_class = BookSerializer
 
     def get_queryset(self) -> QuerySet[Book]:
-        queryset = Book.objects.exclude(borrowed=True)
-        publishers: str = self.request.query_params.get("publishers", None)
-        if publishers is not None:
-            pass
-        return queryset
-
-
-class GetBooks(generics.ListAPIView):
-    serializer_class = BookSerializer
-
-    def get_queryset(self):
-        queryset = Book.get_books.all()
-        publisher = self.request.query_params.get("publisher")
-        category = self.request.query_params.get("category")
+        queryset: QuerySet[Book] = Book.objects.exclude(borrowed=True)
+        publisher: str = self.request.query_params.get("publisher", None)
+        category: str = self.request.query_params.get("category", None)
         if publisher is not None:
-            queryset = queryset.filter(publisher__icontains=publisher)
+            queryset = queryset.filter(publisher__iexact=publisher)
         if category is not None:
-            queryset = queryset.filter(category__icontains=category)
+            queryset = queryset.filter(category__iexact=category)
         return queryset
 
 
-class GetSingleBook(generics.RetrieveAPIView):
-    serializer_class = BookSerializer
-    queryset = Book.get_books.all()
-    lookup_field = "id"
+class LoanBook(generics.CreateAPIView):
+    """_summary_"""
 
+    serializer_class = LoanedBookSerializer
 
-class LoanBook(APIView):
-    def post(self, request, id):
+    def get_queryset(self) -> QuerySet[Book]:
+        queryset: QuerySet[Book] = Book.objects.exclude(borrowed=True)
+        return queryset
+
+    def post(self, request, *args, **kwargs) -> Response:
+        queryset = self.get_queryset()
+        book = get_object_or_404(queryset, id=kwargs["id"])
         serializer = LoanedBookSerializer(data=request.data)
         if serializer.is_valid():
-            email, duration = serializer.data["email"], serializer.data["duration"]
-            user = User.objects.get(email=email)
-            book = Book.objects.get(id=id)
-            LoanedBook.objects.create(
-                book=book, user=user, duration=datetime.timedelta(days=duration)
-            )
-            book.borrowed = True
-            book.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors)
+            loaned_book: LoanedBook = serializer.save(book=book)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+    # def post(self, request, id):
+    #     serializer = LoanedBookSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         email, duration = serializer.data["email"], serializer.data["duration"]
+    #         user = User.objects.get(email=email)
+    #         book = Book.objects.get(id=id)
+    #         LoanedBook.objects.create(
+    #             book=book, user=user, duration=datetime.timedelta(days=duration)
+    #         )
+    #         book.borrowed = True
+    #         book.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors)
 
 
 class GetLoanedBooks(generics.ListAPIView):

@@ -3,8 +3,6 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from .views import (
-    GetBooks,
-    GetSingleBook,
     LoanBook,
     GetLoanedBooks,
     UserViewSet,
@@ -37,6 +35,7 @@ urlpatterns = [
     #         ]
     #     ),
     # ),
+    path("books/<int:id>/borrow/", LoanBook.as_view(), name="book-loan"),
     path("get-loaned-books/", GetLoanedBooks.as_view()),
 ]
 

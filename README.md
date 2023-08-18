@@ -12,10 +12,10 @@ http://127.0.0.1:8000/api/books
 http://127.0.0.1:8000/api/books/id
 
 http://127.0.0.1:8000/api/users/
-
+<!-- 
 http://127.0.0.1:8000/api/user-books-borrowed/
 
-http://127.0.0.1:8000/api/unavailable-books/
+http://127.0.0.1:8000/api/unavailable-books/ -->
 
 
 For Client
