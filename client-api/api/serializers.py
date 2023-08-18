@@ -56,7 +56,7 @@ class LoanedBookSerializer(serializers.Serializer):
         """Check that user is already a member(email exists in db)
 
         Args:
-            value (str): _description_
+            value (str): the email of a particular user
         """
 
         if not User.objects.filter(email=value).exists():
