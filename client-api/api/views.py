@@ -1,5 +1,4 @@
-import datetime
-from typing import Union
+from typing import Union, Optional
 
 from django.shortcuts import get_object_or_404
 from django.db.models.query import QuerySet
@@ -38,8 +37,8 @@ class BooksViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self) -> QuerySet[Book]:
         queryset: QuerySet[Book] = Book.objects.exclude(borrowed=True)
-        publisher: str = self.request.query_params.get("publisher", None)
-        category: str = self.request.query_params.get("category", None)
+        publisher: Optional[str] = self.request.query_params.get("publisher", None)
+        category:  Optional[str] = self.request.query_params.get("category", None)
         if publisher is not None:
             queryset = queryset.filter(publisher__iexact=publisher)
         if category is not None:
