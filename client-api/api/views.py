@@ -56,9 +56,6 @@ class LoanBook(APIView):
         queryset: QuerySet[Book] = Book.objects.exclude(borrowed=True)
         return queryset
 
-    # set a validation for the email input
-    #
-
     def post(self, request, **kwargs) -> Response:
         queryset: QuerySet[Book] = self.get_queryset()
         book: Union[Book, Http404] = get_object_or_404(queryset, id=kwargs["id"])
