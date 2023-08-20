@@ -25,6 +25,8 @@ six==1.16.0
 sqlparse==0.4.2
 types-pytz==2023.3.0.0
 types-PyYAML==6.0.12.11
+types-requests==2.31.0.2
+types-urllib3==1.26.25.14
 typing_extensions==4.7.1
 tzdata==2023.3
 urllib3==1.26.8

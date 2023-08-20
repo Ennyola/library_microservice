@@ -52,7 +52,7 @@ class LoanedBookSerializer(serializers.Serializer):
         )
         return loaned_book
 
-    def validate_email(self, value: str):
+    def validate_email(self, value: str) -> str:
         """Check that user is already a member(email exists in db)
 
         Args:
@@ -66,7 +66,7 @@ class LoanedBookSerializer(serializers.Serializer):
         return value
 
 
-class GetLoanedBooks(serializers.ModelSerializer):
+class GetLoanedBooksSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(read_only=True, slug_field="email")
     book = serializers.SlugRelatedField(read_only=True, slug_field="title")
 

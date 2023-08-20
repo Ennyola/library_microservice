@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, Any
 
 from django.shortcuts import get_object_or_404
 from django.db.models.query import QuerySet
@@ -7,24 +7,21 @@ from django.http import Http404
 from rest_framework import generics, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 
 from .serializers import (
     BookSerializer,
     LoanedBookSerializer,
     UserSerializer,
-    GetLoanedBooks,
+    GetLoanedBooksSerializer,
 )
 from .models import Book, User, LoanedBook
 
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
-    """_summary_
-
-    Args:
-        viewsets (_type_): _description_
-    """
+    """_summary_"""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -38,11 +35,13 @@ class BooksViewSet(viewsets.ModelViewSet):
     def get_queryset(self) -> QuerySet[Book]:
         queryset: QuerySet[Book] = Book.objects.exclude(borrowed=True)
         publisher: Optional[str] = self.request.query_params.get("publisher", None)
-        category:  Optional[str] = self.request.query_params.get("category", None)
+        category: Optional[str] = self.request.query_params.get("category", None)
+        
         if publisher is not None:
             queryset = queryset.filter(publisher__iexact=publisher)
         if category is not None:
             queryset = queryset.filter(category__iexact=category)
+            
         return queryset
 
 
@@ -55,9 +54,14 @@ class LoanBook(APIView):
         queryset: QuerySet[Book] = Book.objects.exclude(borrowed=True)
         return queryset
 
-    def post(self, request, **kwargs) -> Response:
+    def post(self, request: Request, **kwargs: dict[str, Any]) -> Response:
         queryset: QuerySet[Book] = self.get_queryset()
-        book: Union[Book, Http404] = get_object_or_404(queryset, id=kwargs["id"])
+        
+        # Return a 404 error if the user tries to borrow an unavailable book.
+        try:
+            book: Book = get_object_or_404(queryset, id=kwargs["id"])
+        except Http404:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = LoanedBookSerializer(data=request.data)
         if serializer.is_valid():
             book.borrowed = True
@@ -78,5 +82,5 @@ class LoanBook(APIView):
 
 
 class GetLoanedBooks(generics.ListAPIView):
-    serializer_class = GetLoanedBooks
+    serializer_class = GetLoanedBooksSerializer
     queryset = LoanedBook.objects.all()
