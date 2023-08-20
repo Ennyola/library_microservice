@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.query import QuerySet
 
 import requests
 
@@ -11,14 +12,14 @@ class User(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
 
 class ExcludeBorrowedBookManager(models.Manager):
     """A model manager to exclude borrowed books from the queryset"""
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         books = requests.get("http://adminservice:8000/api/books/").json()
         for book in books:
             if super().get_queryset().filter(id=book["id"]).exists():
@@ -54,7 +55,7 @@ class LoanedBook(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """_summary_
 
         Returns:
