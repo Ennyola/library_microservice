@@ -21,47 +21,71 @@ from .models import Book, User, LoanedBook
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
-    """_summary_"""
+    """API endpoint for managing users enrolled in the library."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
 class BooksViewSet(viewsets.ModelViewSet):
-    """_summary_"""
+    """API endpoint for managing books in the library."""
 
     serializer_class = BookSerializer
 
     def get_queryset(self) -> QuerySet[Book]:
+        """Return a queryset of books excluding those that are borrowed."""
         queryset: QuerySet[Book] = Book.objects.exclude(borrowed=True)
         publisher: Optional[str] = self.request.query_params.get("publisher", None)
         category: Optional[str] = self.request.query_params.get("category", None)
-        
+
         if publisher is not None:
             queryset = queryset.filter(publisher__iexact=publisher)
         if category is not None:
             queryset = queryset.filter(category__iexact=category)
-            
+
         return queryset
 
 
 class LoanBook(APIView):
-    """_summary_"""
+    """
+    API endpoint for borrowing a book from the library.
+
+    Only available books can be borrowed. If the book is already borrowed,
+    a 400 Bad Request response will be returned.
+    """
 
     serializer_class = LoanedBookSerializer
 
     def get_queryset(self) -> QuerySet[Book]:
+        """Return a queryset of available books."""
         queryset: QuerySet[Book] = Book.objects.exclude(borrowed=True)
         return queryset
 
     def post(self, request: Request, **kwargs: dict[str, Any]) -> Response:
+        """
+        Borrow a book from the library.
+
+        Args:
+            request: The HTTP request containing user data.
+            kwargs: Additional keyword arguments containing book ID.
+
+        Returns:
+            Response: A response with details of the borrowed book.
+
+        """
         queryset: QuerySet[Book] = self.get_queryset()
-        
+
         # Return a 404 error if the user tries to borrow an unavailable book.
         try:
             book: Book = get_object_or_404(queryset, id=kwargs["id"])
         except Http404:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if book.borrowed:
+            return Response(
+                {"detail": "This book is already borrowed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         serializer = LoanedBookSerializer(data=request.data)
         if serializer.is_valid():
             book.borrowed = True
@@ -82,5 +106,7 @@ class LoanBook(APIView):
 
 
 class GetLoanedBooks(generics.ListAPIView):
+    """API endpoint for listing loaned books."""
+
     serializer_class = GetLoanedBooksSerializer
     queryset = LoanedBook.objects.all()
