@@ -8,12 +8,18 @@ click==8.1.6
 click-didyoumean==0.3.0
 click-plugins==1.1.1
 click-repl==0.3.0
+coreapi==2.3.3
+coreschema==0.0.4
+coverage==7.3.0
 Django==3.2.12
 django-stubs==4.2.3
 django-stubs-ext==4.2.2
 djangorestframework==3.14.0
 idna==3.3
+itypes==1.2.0
+Jinja2==3.1.2
 kombu==5.3.1
+MarkupSafe==2.1.3
 mypy==1.4.1
 mypy-extensions==1.0.0
 prompt-toolkit==3.0.39
@@ -29,6 +35,7 @@ types-requests==2.31.0.2
 types-urllib3==1.26.25.14
 typing_extensions==4.7.1
 tzdata==2023.3
+uritemplate==4.1.1
 urllib3==1.26.8
 vine==5.0.0
 wcwidth==0.2.6
