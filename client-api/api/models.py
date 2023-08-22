@@ -4,33 +4,37 @@ from django.db.models.query import QuerySet
 import requests
 
 
-# Create your models here.
 class User(models.Model):
-    """Users enrolled to the library"""
+    """Model representing users enrolled in the library."""
 
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
     def __str__(self) -> str:
+        """Return a string representation of the user."""
         return f"{self.first_name} {self.last_name}"
 
 
 class ExcludeBorrowedBookManager(models.Manager):
-    """A model manager to exclude borrowed books from the queryset"""
+    """A custom model manager to exclude borrowed books from the queryset."""
 
     def get_queryset(self) -> QuerySet:
+        """Get a queryset excluding borrowed books from the library."""
+        # Fetch book data from the admin service
         books = requests.get("http://adminservice:8000/api/books/").json()
+
+        # Update the local database with fetched book data
         for book in books:
-            if super().get_queryset().filter(id=book["id"]).exists():
-                pass
-            else:
+            if not super().get_queryset().filter(id=book["id"]).exists():
                 super().get_queryset().create(**book)
+
+        # Return a queryset excluding borrowed books
         return super().get_queryset().exclude(borrowed=True)
 
 
 class Book(models.Model):
-    """Book model for the library"""
+    """Model representing books available in the library."""
 
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=100, blank=True, null=True)
@@ -44,11 +48,12 @@ class Book(models.Model):
         ordering = ["-id"]
 
     def __str__(self) -> str:
+        """Return a string representation of the book."""
         return self.title
 
 
 class LoanedBook(models.Model):
-    """_summary_"""
+    """Model representing books that have been loaned."""
 
     date_borrowed = models.DateField(auto_now_add=True)
     return_date = models.DateField()
@@ -56,9 +61,5 @@ class LoanedBook(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        """_summary_
-
-        Returns:
-            _type_: _description_
-        """
-        return f"{self.book.title}-{self.user.email}"
+        """Return a string representation of the loaned book."""
+        return f"{self.book.title} - {self.user.email}"
