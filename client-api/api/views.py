@@ -26,7 +26,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 
-class BooksViewSet(viewsets.ModelViewSet):
+class BooksViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint for managing books in the library."""
 
     serializer_class = BookSerializer
