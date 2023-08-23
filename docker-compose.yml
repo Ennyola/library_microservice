@@ -1,5 +1,14 @@
 version: "3.9"
 services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: "rabbitmq"
+    ports:
+      - "5672:5672" # AMQP port
+      - "15672:15672" # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
   admin_api:
       build: ./admin-api
       container_name: adminservice
@@ -8,8 +17,6 @@ services:
         - ./admin-api:/app/admin-api
       ports:
         - "8000:8000"
-      # networks:
-      #   - isolation-network
   client_api:
       build: ./client-api
       container_name: clientservice
@@ -18,9 +25,18 @@ services:
         - ./client-api:/app/client-api
       ports:
         - "8008:8008"
-      depends_on:
-        - admin_api
-      # networks:
-      #   - isolation-network
+  celery:
+    restart: always
+    build: 
+      context: ./client-api # Build from the client_api project
+    command: celery -A client_api worker -l info 
+    volumes: 
+      - .:/app
+    container_name: library_celery
+    depends_on:
+      - rabbitmq
+      - admin_api
+      - client_api
+
       
     

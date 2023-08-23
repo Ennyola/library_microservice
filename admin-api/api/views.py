@@ -1,8 +1,18 @@
 from datetime import datetime, timedelta
+from typing import Union
+
+from django.shortcuts import get_object_or_404
 
 import requests
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.request import Request
+from rest_framework.mixins import (
+    CreateModelMixin,
+    DestroyModelMixin,
+)
+from rest_framework.viewsets import GenericViewSet
+from rest_framework import status
 
 from .serializers import (
     BookSerializer,
@@ -27,6 +37,19 @@ def get_loaned_books():
 # create book view
 
 
+class BookView(CreateModelMixin, DestroyModelMixin, GenericViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    lookup_field = "id"
+
+    def destroy(self, request, *args, **kwargs) -> Response:
+        if not Book.objects.filter(id=kwargs["id"]).exists():
+            return Response(
+                {"error": "This book does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+        return super().destroy(request, *args, **kwargs)
+
+
 class CreateBook(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -38,9 +61,6 @@ class CreateBook(generics.ListCreateAPIView):
 class DeleteBook(generics.RetrieveDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-
-
-# Fetch/List Users view
 
 
 class GetUsers(generics.ListAPIView):
