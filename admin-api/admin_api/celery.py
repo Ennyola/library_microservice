@@ -3,9 +3,9 @@ import os
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'client_api.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'admin_api.settings')
 
-app = Celery('client_api')
+app = Celery('admin_api')
 
 app.config_from_object("django.conf:settings", namespace="CELERY")
 

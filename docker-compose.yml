@@ -37,6 +37,8 @@ services:
       - rabbitmq
       - admin_api
       - client_api
+    environment:
+      - CELERY_IMPORTS=admin_api.tasks,client_api.tasks
 
       
     
