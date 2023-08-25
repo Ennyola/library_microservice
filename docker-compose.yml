@@ -1,5 +1,6 @@
 version: "3.9"
 services:
+  # RabbitMQ Service
   rabbitmq:
     image: "rabbitmq:3-management"
     container_name: "rabbitmq"
@@ -9,6 +10,8 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: "guest"
       RABBITMQ_DEFAULT_PASS: "guest"
+
+  # Admin API Service
   admin_api:
       build: ./admin-api
       container_name: adminservice
@@ -17,6 +20,10 @@ services:
         - ./admin-api:/app/admin-api
       ports:
         - "8000:8000"
+      depends_on:
+        - rabbitmq
+  
+  # Client API Service
   client_api:
       build: ./client-api
       container_name: clientservice
@@ -25,20 +32,32 @@ services:
         - ./client-api:/app/client-api
       ports:
         - "8008:8008"
-  celery:
+      depends_on:
+        - rabbitmq
+    
+  # Celery Worker for Client API
+  celery_worker_client:
     restart: always
     build: 
       context: ./client-api # Build from the client_api project
     command: celery -A client_api worker -l info 
     volumes: 
       - .:/app
-    container_name: library_celery
+    container_name: celery_client
+    depends_on:
+      - rabbitmq
+      - client_api
+
+  # Celery Worker for Admin API
+  celery_worker_admin:
+    restart: always
+    build: 
+      context: ./admin-api # Build from the admin_api project
+    command: celery -A admin_api worker -l info 
+    volumes: 
+      - .:/app
+    container_name: celery_admin
     depends_on:
       - rabbitmq
       - admin_api
-      - client_api
-    environment:
-      - CELERY_IMPORTS=admin_api.tasks,client_api.tasks
-
-      
     
