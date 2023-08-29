@@ -13,11 +13,11 @@ services:
 
   # Admin API Service
   admin_api:
-      build: ./admin-api
+      build: ./admin_api
       container_name: adminservice
       command: python manage.py runserver 0.0.0.0:8000
       volumes:
-        - ./admin-api:/app/admin-api
+        - ./admin_api:/app/admin_api
       ports:
         - "8000:8000"
       depends_on:
@@ -25,11 +25,11 @@ services:
   
   # Client API Service
   client_api:
-      build: ./client-api
+      build: ./client_api
       container_name: clientservice
       command: python manage.py runserver 0.0.0.0:8008
       volumes:
-        - ./client-api:/app/client-api
+        - ./client_api:/app/client_api
       ports:
         - "8008:8008"
       depends_on:
@@ -39,7 +39,7 @@ services:
   celery_worker_client:
     restart: always
     build: 
-      context: ./client-api # Build from the client_api project
+      context: ./client_api # Build from the client_api project
     command: celery -A client_api worker -l info 
     volumes: 
       - .:/app
@@ -52,7 +52,7 @@ services:
   celery_worker_admin:
     restart: always
     build: 
-      context: ./admin-api # Build from the admin_api project
+      context: ./admin_api # Build from the admin_api project
     command: celery -A admin_api worker -l info 
     volumes: 
       - .:/app

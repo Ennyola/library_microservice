@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
 
-WORKDIR /app/admin-api
+WORKDIR /app/admin_api
 
 COPY requirements.txt .
 
