@@ -1,6 +1,8 @@
 from celery import shared_task, current_app
 
+from shared_tasks.client_tasks import multiply
+
 
 @shared_task
 def add(x, y):
-    multiply.delay(3, 4)
+   return multiply(x,y)
