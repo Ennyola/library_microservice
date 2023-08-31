@@ -1,5 +1,8 @@
 from celery import shared_task
-from shared_tasks import client_tasks
+
+@shared_task(name="multiply")
+def multiply(x,y):
+    return x+y
 
 
 

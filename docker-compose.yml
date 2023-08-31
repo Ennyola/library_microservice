@@ -40,9 +40,9 @@ services:
     restart: always
     build: 
       context: ./client_api # Build from the client_api project
-    command: celery -A client_api worker -l info 
+    command: celery -A client_api worker -l info -n client_worker
     volumes: 
-      - .:/app
+      - ./client_api:/app/client_api
     container_name: celery_client
     depends_on:
       - rabbitmq
@@ -53,9 +53,9 @@ services:
     restart: always
     build: 
       context: ./admin_api # Build from the admin_api project
-    command: celery -A admin_api worker -l info 
+    command: celery -A admin_api worker -l info -n admin_worker
     volumes: 
-      - .:/app
+      - ./admin_api:/app/admin_api
     container_name: celery_admin
     depends_on:
       - rabbitmq
