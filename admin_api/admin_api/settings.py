@@ -10,8 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-import os
-import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,6 +127,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 'amqp://guest:guest@localhost:5672//'
 CELERY_BROKER_URL = "amqp://guest:guest@rabbitmq:5672//"
-
-# Add the parent folder to the Python path
-sys.path.append(os.path.join(BASE_DIR, '..'))
