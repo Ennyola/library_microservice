@@ -1,8 +1,9 @@
 from celery import shared_task, current_app
 
 
-@shared_task(name="add")
-def add(x, y):
-    task_name = "multiply"
-    current_app.send_task(task_name, args=(x, y))
-    return x * y
+@shared_task(name="fetch_users")
+def fetch_users():
+    # Get users from client_api 
+    users_result = current_app.send_task("get_users")
+    users = users_result.get()
+    return users

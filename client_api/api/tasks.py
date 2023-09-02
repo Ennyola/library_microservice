@@ -1,8 +1,8 @@
 from celery import shared_task
 
-@shared_task(name="multiply")
-def multiply(x,y):
-    return x+y
+from .models import User
 
 
-
+@shared_task(name="get_users")
+def get_users() -> User:
+    return User.objects.all()
