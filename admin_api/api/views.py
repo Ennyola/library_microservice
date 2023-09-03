@@ -5,22 +5,20 @@ from django.shortcuts import get_object_or_404
 
 import requests
 from rest_framework import generics
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.mixins import (
-    CreateModelMixin,
-    DestroyModelMixin,
-)
+from rest_framework.mixins import CreateModelMixin, DestroyModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import status
 
 from .serializers import (
     BookSerializer,
-    BookLoanedSerializer,
+    # BookLoanedSerializer,
     UserSerializer,
-    UnAvailableBooksSerializer,
+    # UnAvailableBooksSerializer,
 )
-from .models import Book, Member, BookLoaned
+from .models import Book, User
 
 # Create your views here.
 
@@ -32,10 +30,6 @@ def get_loaned_books():
         "http://clientservice:8080/api/get-loaned-books/"
     ).json()
     return loaned_books
-
-
-# create book view
-
 
 class BookView(CreateModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Book.objects.all()
@@ -50,56 +44,37 @@ class BookView(CreateModelMixin, DestroyModelMixin, GenericViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class CreateBook(generics.ListCreateAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-
-
-# delete book view
-
-
-class DeleteBook(generics.RetrieveDestroyAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-
-
-class GetUsers(generics.ListAPIView):
-    queryset = Member.objects.all()
+class UsersViewset(ListModelMixin, GenericViewSet):
+    queryset = User.objects.all()
     serializer_class = UserSerializer
-
-    # Overiding the list method to allow fetching of all users from client-api and saving them if they do not exist alredy
-    def list(self, request):
-        members = requests.get("http://clientservice:8080/api/enrol-user/").json()
-        serializer = UserSerializer(members, many=True)
-        return Response(serializer.data)
 
 
 # List Users and Books Borrowed
-class UserBookBorrowed(generics.ListAPIView):
-    queryset = BookLoaned.objects.all()
-    serializer_class = BookLoanedSerializer
+# class UserBookBorrowed(generics.ListAPIView):
+#     queryset = BookLoaned.objects.all()
+#     serializer_class = BookLoanedSerializer
 
-    # Overiding the list method to call get_loaned_books
-    def list(self, request):
-        serializer = BookLoanedSerializer(get_loaned_books(), many=True)
-        return Response(serializer.data)
+#     # Overiding the list method to call get_loaned_books
+#     def list(self, request):
+#         serializer = BookLoanedSerializer(get_loaned_books(), many=True)
+#         return Response(serializer.data)
 
 
 # List Books Borrowed and day it will be available
 
 
-class UnavailableBooks(generics.ListAPIView):
-    serializer_class = UnAvailableBooksSerializer
-    queryset = BookLoaned.objects.all()
+# class UnavailableBooks(generics.ListAPIView):
+#     serializer_class = UnAvailableBooksSerializer
+#     queryset = BookLoaned.objects.all()
 
-    # Overiding the list method to call get_loaned_books and setting the duration
-    def list(self, request):
-        books = get_loaned_books()
-        modify_books = []
-        for book in books:
-            duration = datetime.fromisoformat(book["date_borrowed"]) + timedelta(
-                days=int(book["duration"].split(" ")[0])
-            )
-            book = book["book"]
-            modify_books.append({"book": book, "Available On": duration.date()})
-        return Response(modify_books)
+#     # Overiding the list method to call get_loaned_books and setting the duration
+#     def list(self, request):
+#         books = get_loaned_books()
+#         modify_books = []
+#         for book in books:
+#             duration = datetime.fromisoformat(book["date_borrowed"]) + timedelta(
+#                 days=int(book["duration"].split(" ")[0])
+#             )
+#             book = book["book"]
+#             modify_books.append({"book": book, "Available On": duration.date()})
+#         return Response(modify_books)

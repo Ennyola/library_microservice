@@ -1,42 +1,43 @@
 from django.db import models
-from django.utils import timezone
-# Create your models here.
 
+class User(models.Model):
+    """Model representing users enrolled in the library."""
 
-class Member(models.Model):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
-    class Meta:
-        ordering=["-id"]
-        
-    def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+    def __str__(self) -> str:
+        """Return a string representation of the user."""
+        return f"{self.first_name} {self.last_name}"
 
 
 class Book(models.Model):
+    """Model representing books available in the library."""
+
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=100, blank=True, null=True)
     publisher = models.CharField(max_length=100, blank=True, null=True)
     category = models.CharField(max_length=50, blank=True, null=True)
-    year_published = models.IntegerField(blank=True, null=True)
     borrowed = models.BooleanField(default=False)
+    objects = models.Manager()
 
     class Meta:
-        ordering=["-id"]
-        
-    def __str__(self):
+        ordering = ["-id"]
+
+    def __str__(self) -> str:
+        """Return a string representation of the book."""
         return self.title
 
 
-class BookLoaned(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    user = models.ForeignKey(Member, on_delete=models.CASCADE)
-    duration = models.DurationField()
-    date_borrowed =  models.DateField(default=timezone.now)
-    class Meta:
-        ordering=["-id"]
+class LoanedBook(models.Model):
+    """Model representing books that have been loaned."""
 
-    def __str__(self):
-        return f"{self.book.title}-{self.user.email}"
+    date_borrowed = models.DateField(auto_now_add=True)
+    return_date = models.DateField()
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        """Return a string representation of the loaned book."""
+        return f"{self.book.title} - {self.user.email}"
