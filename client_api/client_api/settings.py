@@ -36,8 +36,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "api",
+    "django_celery_results",
     "rest_framework",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -125,7 +126,9 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# 'amqp://guest:guest@localhost:5672//'
-CELERY_BROKER_URL = "amqp://guest:guest@rabbitmq:5672//"
-
 REST_FRAMEWORK = {"DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema"}
+
+# celery configurations
+CELERY_BROKER_URL = "amqp://guest:guest@rabbitmq:5672//"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_CACHE_BACKEND = "django-cache"

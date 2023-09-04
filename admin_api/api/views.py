@@ -23,8 +23,6 @@ from .models import Book, User
 # Create your views here.
 
 # function to fetch all loaned books from the client api and save them if they do not exist in the database
-
-
 def get_loaned_books():
     loaned_books = requests.get(
         "http://clientservice:8080/api/get-loaned-books/"
