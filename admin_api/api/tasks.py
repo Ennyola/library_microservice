@@ -1,7 +1,11 @@
 from celery import shared_task, current_app
 
-@shared_task(name="fetch_users")
-def fetch_users():
-    # Get users from client_api 
-    return current_app.send_task("get_users")
-   
+from .models import User
+
+
+@shared_task(name="get_user_data")
+def get_user_data(
+    id: int, email: str, first_name: str, last_name: str, created: bool
+) -> None:
+    if created:
+        User.objects.create(email=email, first_name=first_name, last_name=last_name)

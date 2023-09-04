@@ -1,18 +1,13 @@
-from celery import shared_task
+from celery import shared_task, current_app
 
 from .models import User
 
 
-@shared_task(name="get_users")
-def get_users() -> User:
-    users = User.objects.all()  # Fetch all users
-    user_data = []
-    for user in users:
-        user_data.append(
-            {
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-            }
-        )
-    return user_data
+@shared_task(name="send_user_data")
+def send_user_data(
+    id: int, email: str, first_name: str, last_name: str, created: bool
+) -> None:
+    current_app.send_task(
+        "get_user_data",
+        args=(id, email, first_name, last_name, created),
+    )
