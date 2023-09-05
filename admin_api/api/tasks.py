@@ -11,3 +11,7 @@ def get_user_data(
         User.objects.create(
             id=id, email=email, first_name=first_name, last_name=last_name
         )
+
+@shared_task(name="send_new_book_data")
+def send_new_book_data(**kwargs):
+    current_app.send_task("get_new_book_data", kwargs={**kwargs})
