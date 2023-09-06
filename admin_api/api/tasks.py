@@ -12,6 +12,12 @@ def get_user_data(
             id=id, email=email, first_name=first_name, last_name=last_name
         )
 
+
 @shared_task(name="send_new_book_data")
 def send_new_book_data(**kwargs):
     current_app.send_task("get_new_book_data", kwargs={**kwargs})
+
+
+@shared_task(name="send_deleted_book_data")
+def send_deleted_book_data(book_id: int):
+    current_app.send_task("get_deleted_book_data", args=(book_id,))

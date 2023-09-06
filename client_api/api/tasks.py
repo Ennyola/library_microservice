@@ -19,3 +19,6 @@ def get_new_book_data(**kwargs) -> None:
     if created:
         Book.objects.create(**kwargs)
     
+@shared_task(name="get_deleted_book_data")
+def get_deleted_book_data(book_id:int) -> None:
+    Book.objects.get(id=book_id).delete()
