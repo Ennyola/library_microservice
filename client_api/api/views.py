@@ -41,11 +41,10 @@ class BooksViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(publisher__iexact=publisher)
         if category is not None:
             queryset = queryset.filter(category__iexact=category)
-
         return queryset
 
 
-class LoanBook(APIView):
+class LoanBook(generics.GenericAPIView):
     """
     API endpoint for borrowing a book from the library.
 
@@ -85,10 +84,13 @@ class LoanBook(APIView):
                 {"detail": "This book is already borrowed."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
         serializer = LoanedBookSerializer(data=request.data)
         if serializer.is_valid():
             book.borrowed = True
             book.save()
+
+            # Get a loanedbook object to be passed as a response
             loaned_book: LoanedBook = serializer.save(book=book)
             return Response(
                 {

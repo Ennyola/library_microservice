@@ -1,6 +1,6 @@
 from celery import shared_task, current_app
 
-from .models import User
+from .models import User, LoanedBook, Book
 
 
 @shared_task(name="get_user_data")
@@ -11,6 +11,15 @@ def get_user_data(
         User.objects.create(
             id=id, email=email, first_name=first_name, last_name=last_name
         )
+
+
+@shared_task(name="get_loaned_book_data")
+def get_loaned_book_data(**kwargs) -> None:
+    book_id = kwargs.pop("book_id")
+    user_id = kwargs.pop("user_id")
+    book = Book.objects.get(id=book_id)
+    user = User.objects.get(id=user_id)
+    LoanedBook.objects.create(book=book, user=user, **kwargs)
 
 
 @shared_task(name="send_new_book_data")
