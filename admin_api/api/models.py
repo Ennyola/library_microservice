@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class User(models.Model):
     """Model representing users enrolled in the library."""
 

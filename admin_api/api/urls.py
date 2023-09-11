@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     BookView,
     UsersViewset,
-    # UserBookBorrowed,
+    UserBookBorrowed,
     # UnavailableBooks,
 )
 
@@ -14,7 +14,9 @@ router = DefaultRouter()
 router.register(r"books", BookView)
 router.register(r"users", UsersViewset)
 
+
 urlpatterns = [
+    path("user-books/", UserBookBorrowed.as_view())
     # path(
     #     "books/",
     #     include(

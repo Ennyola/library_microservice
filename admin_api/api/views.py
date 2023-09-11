@@ -14,13 +14,14 @@ from rest_framework import status
 
 from .serializers import (
     BookSerializer,
-    # BookLoanedSerializer,
     UserSerializer,
+    LoanedBookSerializer,
     # UnAvailableBooksSerializer,
 )
-from .models import Book, User
+from .models import Book, User, LoanedBook
 
 # Create your views here.
+
 
 # function to fetch all loaned books from the client api and save them if they do not exist in the database
 def get_loaned_books():
@@ -28,6 +29,7 @@ def get_loaned_books():
         "http://clientservice:8080/api/get-loaned-books/"
     ).json()
     return loaned_books
+
 
 class BookView(CreateModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Book.objects.all()
@@ -42,20 +44,15 @@ class BookView(CreateModelMixin, DestroyModelMixin, GenericViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class UsersViewset(ListModelMixin, GenericViewSet):
+class UsersViewset(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
 # List Users and Books Borrowed
-# class UserBookBorrowed(generics.ListAPIView):
-#     queryset = BookLoaned.objects.all()
-#     serializer_class = BookLoanedSerializer
-
-#     # Overiding the list method to call get_loaned_books
-#     def list(self, request):
-#         serializer = BookLoanedSerializer(get_loaned_books(), many=True)
-#         return Response(serializer.data)
+class UserBookBorrowed(generics.ListAPIView):
+    queryset = LoanedBook.objects.all()
+    serializer_class = LoanedBookSerializer
 
 
 # List Books Borrowed and day it will be available
