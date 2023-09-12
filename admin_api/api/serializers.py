@@ -26,15 +26,12 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class LoanedBookSerializer(serializers.ModelSerializer):
-    
-    
+    user = serializers.StringRelatedField()
+    book = serializers.StringRelatedField()
+
     class Meta:
         model = LoanedBook
-        fields = ["book", "user"]
-        extra_kwargs = {
-            "book": {"view_name": "book-detail", "lookup_field": "id"},
-            "user": {"view_name": "user-detail"},
-        }
+        fields = "__all__"
 
 
 class GetLoanedBooksSerializer(serializers.ModelSerializer):

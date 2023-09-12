@@ -24,11 +24,11 @@ from .models import Book, User, LoanedBook
 
 
 # function to fetch all loaned books from the client api and save them if they do not exist in the database
-def get_loaned_books():
-    loaned_books = requests.get(
-        "http://clientservice:8080/api/get-loaned-books/"
-    ).json()
-    return loaned_books
+# def get_loaned_books():
+#     loaned_books = requests.get(
+#         "http://clientservice:8080/api/get-loaned-books/"
+#     ).json()
+#     return loaned_books
 
 
 class BookView(CreateModelMixin, DestroyModelMixin, GenericViewSet):

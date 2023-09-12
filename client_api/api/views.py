@@ -13,7 +13,6 @@ from .serializers import (
     BookSerializer,
     LoanedBookSerializer,
     UserSerializer,
-    GetLoanedBooksSerializer,
 )
 from .models import Book, User, LoanedBook
 
@@ -106,8 +105,8 @@ class LoanBook(generics.GenericAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetLoanedBooks(generics.ListAPIView):
-    """API endpoint for listing loaned books."""
+# class GetLoanedBooks(generics.ListAPIView):
+#     """API endpoint for listing loaned books."""
 
-    serializer_class = GetLoanedBooksSerializer
-    queryset = LoanedBook.objects.all()
+#     serializer_class = GetLoanedBooksSerializer
+#     queryset = LoanedBook.objects.all()
