@@ -2,33 +2,15 @@ from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
 
-from .views import (
-    BookView,
-    UsersViewset,
-    UserBookBorrowed,
-    # UnavailableBooks,
-)
+from .views import BookViewSet, UsersViewset, UserBookBorrowed, UnavailableBooks
 
 
 router = DefaultRouter()
-router.register(r"books", BookView)
+router.register(r"books", BookViewSet)
 router.register(r"users", UsersViewset)
+router.register(r"user-books-borrowed", UserBookBorrowed, basename="user-books")
+router.register(r"unavailable-books/", UserBookBorrowed, basename="unavailable-books")
 
-
-urlpatterns = [
-    path("user-books/", UserBookBorrowed.as_view())
-    # path(
-    #     "books/",
-    #     include(
-    #         [
-    #             path("", CreateBook.as_view(), name="create-book"),
-    #             path("<int:pk>/", DeleteBook.as_view(), name="delete-book"),
-    #         ]
-    #     ),
-    # ),
-    # path("users/", GetUsers.as_view(), name="get-users"),
-    # path("user-books-borrowed/", UserBookBorrowed.as_view()),
-    # path("unavailable-books/", UnavailableBooks.as_view()),
-]
+urlpatterns = []
 
 urlpatterns += router.urls

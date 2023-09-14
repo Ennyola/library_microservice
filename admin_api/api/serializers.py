@@ -33,11 +33,3 @@ class LoanedBookSerializer(serializers.ModelSerializer):
         model = LoanedBook
         fields = "__all__"
 
-
-class GetLoanedBooksSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(read_only=True, slug_field="email")
-    book = serializers.SlugRelatedField(read_only=True, slug_field="title")
-
-    class Meta:
-        model = LoanedBook
-        fields = "__all__"

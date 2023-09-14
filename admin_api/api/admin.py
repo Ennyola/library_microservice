@@ -17,9 +17,9 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(LoanedBook)
 class LoanedBookAdmin(admin.ModelAdmin):
-    list_display = ("get_user", "get_book", "date_borrowed", "return_date")
+    list_display = ("user", "book", "date_borrowed", "return_date")
 
-    def get_user(self, obj: LoanedBook) -> str:
+    def user(self, obj: LoanedBook) -> str:
         """ Returns the email of the user loaning a book
 
         Args:
@@ -30,7 +30,7 @@ class LoanedBookAdmin(admin.ModelAdmin):
         """        
         return obj.user.email
 
-    def get_book(self, obj: LoanedBook) -> str:
+    def book(self, obj: LoanedBook) -> str:
         """ Returns the book title being loaned
 
         Args:

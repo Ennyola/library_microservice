@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import Union
 
 from django.shortcuts import get_object_or_404
+from django.db.models.query import QuerySet
 
 import requests
 from rest_framework import generics
@@ -31,7 +32,7 @@ from .models import Book, User, LoanedBook
 #     return loaned_books
 
 
-class BookView(CreateModelMixin, DestroyModelMixin, GenericViewSet):
+class BookViewSet(CreateModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_field = "id"
@@ -50,7 +51,7 @@ class UsersViewset(viewsets.ReadOnlyModelViewSet):
 
 
 # List Users and Books Borrowed
-class UserBookBorrowed(generics.ListAPIView):
+class UserBookBorrowed(ListModelMixin, GenericViewSet):
     queryset = LoanedBook.objects.all()
     serializer_class = LoanedBookSerializer
 
@@ -58,18 +59,29 @@ class UserBookBorrowed(generics.ListAPIView):
 # List Books Borrowed and day it will be available
 
 
-# class UnavailableBooks(generics.ListAPIView):
-#     serializer_class = UnAvailableBooksSerializer
-#     queryset = BookLoaned.objects.all()
+class UnavailableBooks(ListModelMixin, GenericViewSet):
+    serializer_class = LoanedBookSerializer
 
-#     # Overiding the list method to call get_loaned_books and setting the duration
-#     def list(self, request):
-#         books = get_loaned_books()
-#         modify_books = []
-#         for book in books:
-#             duration = datetime.fromisoformat(book["date_borrowed"]) + timedelta(
-#                 days=int(book["duration"].split(" ")[0])
-#             )
-#             book = book["book"]
-#             modify_books.append({"book": book, "Available On": duration.date()})
-#         return Response(modify_books)
+    def get_queryset(self) -> QuerySet[LoanedBook]:
+        # Get the current date
+        current_date = datetime.now().date()
+
+        # Filter LoanedBook objects where return_date is greater than or equal to the current date
+        queryset = LoanedBook.objects.filter(return_date__gte=current_date)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        # Get the queryset
+        loaned_books = self.get_queryset()
+
+        # Create a list to hold the modified data
+        loaned_books_data = []
+
+        # Modify the data as required
+        for loaned_book in loaned_books:
+            available_on = loaned_book.return_date.strftime("%d-%m-%Y")
+            loaned_books_data.append(
+                {"book": loaned_book.book.title, "available_on": available_on}
+            )
+
+        return Response(loaned_books_data)

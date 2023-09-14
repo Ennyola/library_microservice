@@ -36,8 +36,8 @@ class LoanedBook(models.Model):
 
     date_borrowed = models.DateField(auto_now_add=True)
     return_date = models.DateField()
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, related_name="loaned_books", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="loaned_books", on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         """Return a string representation of the loaned book."""
