@@ -1,17 +1,10 @@
 from datetime import date, timedelta
-from typing import TypedDict
 
 from rest_framework import serializers
 
 from .models import Book, User, LoanedBook
+from .typed_dicts import LoanedBookValidationData
 
-
-class LoanedBookValidationData(TypedDict):
-    """A TypeDict specifying data from the validation data in LoanedBookSerializer"""
-
-    email: str
-    duration: int
-    book: Book
 
 
 class UserSerializer(serializers.ModelSerializer):

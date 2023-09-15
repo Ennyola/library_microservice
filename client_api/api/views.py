@@ -1,11 +1,10 @@
-from typing import Union, Optional, Any
+from typing import Optional, Any
 
 from django.shortcuts import get_object_or_404
 from django.db.models.query import QuerySet
 from django.http import Http404
 
 from rest_framework import generics, status, viewsets
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 
@@ -103,10 +102,3 @@ class LoanBook(generics.GenericAPIView):
             )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class GetLoanedBooks(generics.ListAPIView):
-#     """API endpoint for listing loaned books."""
-
-#     serializer_class = GetLoanedBooksSerializer
-#     queryset = LoanedBook.objects.all()

@@ -1,6 +1,7 @@
 from celery import shared_task, current_app
 
-from .models import User, Book
+from .models import Book
+from .typed_dicts import LoanedBookEventData
 
 
 @shared_task(name="send_user_data")
@@ -14,7 +15,7 @@ def send_user_data(
 
 
 @shared_task(name="send_loaned_book_data")
-def send_loaned_book_data(**kwargs) -> None:
+def send_loaned_book_data(**kwargs:LoanedBookEventData) -> None:
     current_app.send_task("get_loaned_book_data", kwargs={**kwargs})
 
 
