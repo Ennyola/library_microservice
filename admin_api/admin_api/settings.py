@@ -131,3 +131,5 @@ CELERY_BROKER_URL = "amqp://guest:guest@rabbitmq:5672//"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "django-cache"
 
+# Configuration for coreapi documentation
+REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }

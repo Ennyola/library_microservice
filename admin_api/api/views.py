@@ -125,7 +125,7 @@ class UnavailableBooks(ListModelMixin, GenericViewSet):
         for loaned_book in loaned_books:
             available_on = loaned_book.return_date.strftime("%d-%m-%Y")
             loaned_books_data.append(
-                {"book": loaned_book.book.title, "available_on": available_on}
+                {"book": loaned_book.book.title,"book_id":loaned_book.book.id,"borrowed":loaned_book.book.borrowed, "available_on": available_on}
             )
 
         return Response(loaned_books_data)

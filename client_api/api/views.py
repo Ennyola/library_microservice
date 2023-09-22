@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models.query import QuerySet
 from django.http import Http404
 
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, status, viewsets, mixins
 from rest_framework.response import Response
 from rest_framework.request import Request
 
@@ -17,8 +17,8 @@ from .models import Book, User, LoanedBook
 
 
 # Create your views here.
-class UserViewSet(viewsets.ModelViewSet):
-    """API endpoint for managing users enrolled in the library."""
+class UserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """API endpoint for enrolling users to the library."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
