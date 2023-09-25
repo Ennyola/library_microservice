@@ -54,6 +54,7 @@ class LoanBook(generics.GenericAPIView):
 
     def get_queryset(self) -> QuerySet[Book]:
         """Return a queryset of available books."""
+
         queryset: QuerySet[Book] = Book.objects.exclude(borrowed=True)
         return queryset
 
@@ -69,6 +70,7 @@ class LoanBook(generics.GenericAPIView):
             Response: A response with details of the borrowed book.
 
         """
+
         queryset: QuerySet[Book] = self.get_queryset()
 
         # Return a 404 error if the user tries to borrow an unavailable book.
