@@ -26,6 +26,7 @@ cd library_microservice
 
 # Build and start the Docker containers
 docker-compose up --build
+```
 
 ### Usage
 
