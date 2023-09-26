@@ -1,5 +1,6 @@
-# library_microservice
-A library microservice api that allows you save,borrow and fetch books
+# LibraSys: Microservice-Powered Library Management API
+
+LibraSys is a microservice-driven API for efficient library book management, including cataloging, borrowing, and book retrieval.
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
