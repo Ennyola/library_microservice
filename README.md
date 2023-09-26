@@ -1,29 +1,32 @@
 # library_microservice
 A library microservice api that allows you save,borrow and fetch books
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 
-To start the project, run the command "docker-composer up build"
-the api routes are as follows 
+### Prerequisites
 
-For Admin
+To run this project, you will need to have the following software installed on your machine:
 
-http://127.0.0.1:8000/api/books
+- Python 3.x
+- Django
+- Django REST framework(DRF)
+- RabbitMQ
+- Celery
 
-http://127.0.0.1:8000/api/books/id
+### Installation
 
-http://127.0.0.1:8000/api/users/
-<!-- 
-http://127.0.0.1:8000/api/user-books-borrowed/
+```bash
+# Clone the repository
+git clone https://github.com/Ennyola/library_microservice.git
 
-http://127.0.0.1:8000/api/unavailable-books/ -->
+# Change to the project directory
+cd library_microservice
 
+# Build and start the Docker containers
+docker-compose up --build
 
-For Client
+# View the api endpoints
+On your browser navigate to http://127.0.0.1:8000/api/ and http://127.0.0.1:8008/api/
 
-http://127.0.0.1:8080/api/books/ 
-
-http://127.0.0.1:8080/api/books/id/
-
-http://127.0.0.1:8080/api/books/id/borrow/
-
-http://127.0.0.1:8080/api/books/enrol-user/
